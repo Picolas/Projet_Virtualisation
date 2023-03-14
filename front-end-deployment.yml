@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front-end
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: front-end
+  template:
+    metadata:
+      labels:
+        app: front-end
+    spec:
+      containers:
+        - image: thomasagnola/front-end:0.3
+          imagePullPolicy: IfNotPresent
+          name: front-end
+      restartPolicy: Always
