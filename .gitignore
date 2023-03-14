@@ -4,3 +4,4 @@
 !Dockerfile
 !webpage
 !webpage/*
+!*.yml
