@@ -1,5 +1,8 @@
-FROM nginx
-COPY webpage /usr/share/nginx/html
-RUN apt update
-RUN apt install -y nano
+FROM node:alpine
+COPY package.json ./
+COPY package-lock.json ./
+RUN npm install
+WORKDIR /src
+COPY ./ ./
+CMD [ "npm", "start" ]
 EXPOSE 80
