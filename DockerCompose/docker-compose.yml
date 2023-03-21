@@ -8,6 +8,8 @@ services:
       MYSQL_DATABASE: my_database
       MYSQL_USER: my_user
       MYSQL_PASSWORD: my_password
+    networks:
+      - esieevirtua
 
   backend:
     image: picolas/backendlaravel-virtualisation
@@ -18,13 +20,15 @@ services:
       MYSQL_DATABASE: my_database
       MYSQL_USER: my_user
       MYSQL_PASSWORD: my_password
-    links:
-      - db
+    networks:
+      - esieevirtua
 
   react:
     image: picolas/react-virtualisation
     ports:
       - 3000
-    links:
-      - backend
-      - db
+    networks:
+      - esieevirtua
+networks:
+    esieevirtua:
+        driver: bridge

@@ -21,3 +21,11 @@ Route::get('/migrate', function () {
     \Artisan::call('migrate');
     return \Artisan::output();
 });
+
+Route::get('/db', function () {
+    dump(env("DB_HOST", "somedefaultvalue"));
+    dump(env("DB_PORT", "somedefaultvalue"));
+    dump(env("DB_DATABASE", "somedefaultvalue"));
+    dump(env("DB_USERNAME", "somedefaultvalue"));
+    dump(env("DB_PASSWORD", "somedefaultvalue"));
+});
