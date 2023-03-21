@@ -1,5 +1,8 @@
 FROM node:alpine
-COPY build/ /usr/share/nginx/html
+COPY . /app
+WORKDIR  /app
+RUN npm install
+RUN npm run build
 RUN npm install -g serve
 EXPOSE 3000
-CMD ["serve", "-s", "/usr/share/nginx/html", "-l", "3000"]
+CMD ["serve", "-s", "build", "-l", "3000"]
