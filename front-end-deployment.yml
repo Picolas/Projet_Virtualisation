@@ -15,9 +15,18 @@ spec:
         app: front-end
     spec:
       containers:
-        - image: thomasagnola/front-end:0.3
+        - image: picolas/react-virtualisation
           imagePullPolicy: IfNotPresent
           name: front-end
           ports:
-          - containerPort: 80
+          - containerPort: 3000
+          env:
+            - name: MYSQL_HOST
+              value: db
+            - name: MYSQL_DATABASE
+              value: my_database
+            - name: MYSQL_USER
+              value: my_user
+            - name: MYSQL_PASSWORD
+              value: my_password
       restartPolicy: Always
