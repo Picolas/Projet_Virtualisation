@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +16,19 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get('/migrate', function () {
+    Artisan::call('migrate', [
+        '--force' => true
+    ]);
+    return 'Migrated';
+});
+
+Route::get('/db', function () {
+    dump(env("DB_HOST", "somedefaultvalue"));
+    dump(env("DB_PORT", "somedefaultvalue"));
+    dump(env("DB_DATABASE", "somedefaultvalue"));
+    dump(env("DB_USERNAME", "somedefaultvalue"));
+    dump(env("DB_PASSWORD", "somedefaultvalue"));
 });

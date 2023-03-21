@@ -34,9 +34,12 @@ ENV APP_ENV=production
 ENV APP_KEY=base64:IUhiufhiufhzeiufhze84648fze8f4ze6f8ez4
 ENV APP_DEBUG=false
 ENV APP_URL=http://localhost
+ENV DB_DATABASE=my_database
+ENV DB_USERNAME=my_user
+ENV DB_PASSWORD=my_password
 
 # Exposer le port 80 pour le trafic HTTP
-EXPOSE 80
+EXPOSE 8080
 
 # Définir la commande pour exécuter l'application Laravel
-CMD ["php", "artisan", "serve", "--host", "0.0.0.0", "--port", "80"]
+CMD ["php", "artisan", "serve", "--host", "0.0.0.0", "--port", "8080"]
