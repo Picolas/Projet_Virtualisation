@@ -1,23 +1,4 @@
-######################### NAME #################################################
-# https://raw.githubusercontent.com/erdaltsksn/dockerignore/main/templates/NAME.dockerignore
-################################################################################
-
-# Ignore everything
-*
-
-# Except the license
-LICENSE
-
-# Except the makefiles
-Makefile
-**/*.mk
-
-# Except the followings:
-# - The files and folders that are needed for the project
-!Dockerfile
-!webpage/*
-
-# Ignore the unneeded files and folders inside the allowed files and folders
-# This should come after the allowed files and folders.
-# - The files and folders that are not needed for the project
-
+node_modules
+.git
+npm-debug.log
+Dockerfile
