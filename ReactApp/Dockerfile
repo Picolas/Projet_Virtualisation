@@ -1,11 +1,8 @@
 FROM node:alpine
-WORKDIR /app
-COPY package.json ./
-COPY package-lock.json ./
+COPY . /app
+WORKDIR  /app
 RUN npm install
-WORKDIR /app/public
-COPY /public/ ./
-WORKDIR /app/src
-COPY /src/ ./
-CMD [ "npm", "start" ]
-EXPOSE 80
+RUN npm run build
+RUN npm install -g serve
+EXPOSE 3000
+CMD ["serve", "-s", "build", "-l", "3000"]
