@@ -19,3 +19,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/message', 'App\Http\Controllers\Message\MessageController@getMessage');
+
+Route::get('/hello', function(Request $request) {
+    return response()->json([
+        'message' => "Hello from Laravel Backend",
+    ]);
+});

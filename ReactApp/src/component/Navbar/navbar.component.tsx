@@ -1,7 +1,5 @@
-import {Flex, Spacer, Button, LinkBox} from "@chakra-ui/react";
-import {Route, Routes} from 'react-router-dom';
+import {Flex, Spacer, Button} from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import Home from "../../feature/Home/Home";
 
 export function Navbar() {
     return (
@@ -12,7 +10,11 @@ export function Navbar() {
                     </Button>
                 </Link>
                 <Spacer />
-
+                <Link to='/laravel'>
+                    <Button>
+                        Laravel
+                    </Button>
+                </Link>
 
         </Flex>
     );

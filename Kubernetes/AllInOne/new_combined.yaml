@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fullstack-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fullstack-app
+  template:
+    metadata:
+      labels:
+        app: fullstack-app
+    spec:
+      containers:
+        - name: react-app
+          image: picolas/react-virtualisation
+          imagePullPolicy: Never
+          env:
+            - name: LARAVEL_API_URL
+              value: "http://laravel-app:8080"
+          ports:
+            - containerPort: 3000
+        - name: laravel-app
+          image: picolas/backendlaravel-virtualisation
+          imagePullPolicy: Never
+          env:
+            - name: DB_HOST
+              value: "mysql-virtualisation"
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_DATABASE
+              value: "my_database"
+            - name: DB_USERNAME
+              value: "my_user"
+            - name: DB_PASSWORD
+              value: "my_password"
+          ports:
+            - containerPort: 8080
+        - name: mysql
+          image: mysql
+          imagePullPolicy: Never
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "my_password"
+            - name: MYSQL_DATABASE
+              value: "my_database"
+            - name: MYSQL_USER
+              value: "my_user"
+            - name: MYSQL_PASSWORD
+              value: "my_password"
+          ports:
+            - containerPort: 3306
+      restartPolicy: Always
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: react-app
+spec:
+  type: NodePort
+  ports:
+    - port: 3000
+      targetPort: 3000
+      protocol: TCP
+      nodePort: 32000
+  selector:
+    app: fullstack-app
+    container: react-app
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: laravel-app
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+      nodePort: 32001
+  selector:
+    app: fullstack-app
+    container: laravel-app
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  type: NodePort
+  ports:
+    - port: 3306
+      targetPort: 3306
+      protocol: TCP
+      nodePort: 32002
+  selector:
+    app: fullstack-app
+    container: mysql

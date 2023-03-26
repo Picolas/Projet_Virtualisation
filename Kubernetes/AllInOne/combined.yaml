@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: virtualisation-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: virtualisation-app
+  template:
+    metadata:
+      labels:
+        app: virtualisation-app
+    spec:
+      containers:
+        - name: react-app-virtualisation
+          image: picolas/react-virtualisation
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3000
+          env:
+            - name: LARAVEL_API_URL
+              value: "http://laravel-app-virtualisation:8080"
+        - name: laravel-app-virtualisation
+          image: picolas/backendlaravel-virtualisation
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: configlaravel
+              mountPath: /var/www/html/BackendLaravel
+          env:
+            - name: DB_HOST
+              value: "mysql-virtualisation"
+              # make sure to use the service name
+              # for accessing mysql container
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_DATABASE
+              value: "my_database"
+            - name: DB_USERNAME
+              value: "my_user"
+            - name: DB_PASSWORD
+              value: "my_password"
+        - name: mysql-virtualisation
+          image: mysql
+          imagePullPolicy: Never
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: my_password
+            - name: MYSQL_DATABASE
+              value: my_database
+            - name: MYSQL_USER
+              value: my_user
+            - name:  MYSQL_PASSWORD
+              value: my_password
+          ports:
+            - containerPort: 3306
+      restartPolicy: Always
+      volumes:
+        - name: configlaravel
+          configMap:
+            name: env-config
+            items:
+              - key: .env
+                path: .env
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: virtualisation-app
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 3000
+      protocol: TCP
+      name: react
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+      name: laravel
+    - port: 3306
+      targetPort: 3306
+      protocol: TCP
+      name: mysql
+  selector:
+    app: virtualisation-app

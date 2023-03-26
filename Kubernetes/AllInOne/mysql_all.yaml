@@ -1,0 +1,46 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: mysql-virtualisation
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-virtualisation
+  template:
+    metadata:
+      labels:
+        app: mysql-virtualisation
+    spec:
+      containers:
+        - name: mysql-virtualisation
+          image: mysql
+          imagePullPolicy: Never
+          env:
+          - name: MYSQL_ROOT_PASSWORD
+            value: my_password
+          - name: MYSQL_DATABASE
+            value: my_database
+          - name: MYSQL_USER
+            value: my_user
+          - name:  MYSQL_PASSWORD
+            value: my_password
+          ports:
+            - containerPort: 3306
+      restartPolicy: Always
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: mysql-virtualisation
+spec:
+  type: NodePort
+  ports:
+    - port: 3306
+      targetPort: 3306
+      protocol: TCP
+      nodePort: 32002
+  selector:
+    app: mysql-virtualisation

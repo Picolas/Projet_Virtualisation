@@ -30,13 +30,21 @@ RUN composer install --no-dev --no-scripts --no-progress --prefer-dist --optimiz
 RUN chown -R www-data:www-data /var/www/html/BackendLaravel/storage /var/www/html/BackendLaravel/bootstrap/cache
 
 # Définir les variables d'environnement pour Laravel
+ARG DB_HOST
+ARG DB_PORT
+ARG DB_DATABASE
+ARG DB_USERNAME
+ARG DB_PASSWORD
+
 ENV APP_ENV=production
 ENV APP_KEY=base64:IUhiufhiufhzeiufhze84648fze8f4ze6f8ez4
 ENV APP_DEBUG=false
 ENV APP_URL=http://localhost
-ENV DB_DATABASE=my_database
-ENV DB_USERNAME=my_user
-ENV DB_PASSWORD=my_password
+ENV DB_HOST=${DB_HOST}
+ENV DB_PORT=${DB_PORT}
+ENV DB_DATABASE=${DB_DATABASE}
+ENV DB_USERNAME=${DB_USERNAME}
+ENV DB_PASSWORD=${DB_PASSWORD}
 
 # Exposer le port 80 pour le trafic HTTP
 EXPOSE 8080

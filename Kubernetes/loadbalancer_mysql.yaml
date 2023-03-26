@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: load-balancer-mysql
+  labels:
+    app: mysql
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 3306
+    targetPort: 3306
+    protocol: TCP
+    nodePort: 31003
+  selector:
+    app: mysql

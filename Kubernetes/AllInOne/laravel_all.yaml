@@ -1,0 +1,37 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: laravel-app-virtualisation
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: laravel-app-virtualisation
+  template:
+    metadata:
+      labels:
+        app: laravel-app-virtualisation
+    spec:
+      containers:
+        - name: laravel-app-virtualisation
+          image: picolas/backendlaravel-virtualisation
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+      restartPolicy: Always
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: laravel-app-virtualisation
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+      nodePort: 32001
+  selector:
+    app: laravel-app-virtualisation
