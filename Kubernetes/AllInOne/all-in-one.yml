@@ -1,0 +1,185 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-db
+spec:
+  selector:
+    matchLabels:
+      app: mysql-db
+  template:
+    metadata:
+      labels:
+        app: mysql-db
+    spec:
+      containers:
+      - name: mysql-db
+        image: mysql
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            value: my_password
+        ports:
+        - containerPort: 3306
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: laravel-app
+spec:
+  selector:
+    matchLabels:
+      app: laravel-app
+      tier: mysql-db
+  template:
+    metadata:
+      labels:
+        app: laravel-app
+        tier: mysql-db
+    spec:
+      containers:
+      - name: laravel-app
+        image: picolas/backendlaravel-virtualisation
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: react-app
+spec:
+  selector:
+    matchLabels:
+      app: react-app
+      tier: laravel-app
+  template:
+    metadata:
+      labels:
+        app: react-app
+        tier: laravel-app
+    spec:
+      containers:
+      - name: react-app
+        image: picolas/react-virtualisation
+        imagePullPolicy: Always
+        env:
+          - name: LARAVEL_API_URL
+            value: "http://laravel-service:31181"
+        ports:
+        - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: react-service
+spec:
+  selector:
+    app: react-app
+    tier: laravel-app
+  type: NodePort
+  ports:
+  - port: 3000
+    targetPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: react-service-node
+spec:
+  selector:
+    app: react-app
+    tier: laravel-app
+  type: NodePort
+  ports:
+  - port: 3000
+    nodePort: 31180
+    targetPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: laravel-app-service
+spec:
+  selector:
+    app: laravel-app
+    tier: mysql-db
+  ports:
+  - port: 8080
+    targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: laravel-app-service-node
+spec:
+  selector:
+    app: laravel-app
+    tier: mysql-db
+  type: NodePort
+  ports:
+  - port: 8080
+    nodePort: 31181
+    targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service
+spec:
+  selector:
+    app: mysql-db
+  ports:
+  - port: 3306
+    targetPort: 3306
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service-node
+spec:
+  selector:
+    app: mysql-db
+  type: NodePort
+  ports:
+  - port: 3306
+    nodePort: 31182
+    targetPort: 3306
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: laravel-ingress
+  #annotations:
+  #  nginx.ingress.kubernetes.io/rewrite-target: /$1
+  labels:
+    name: laravel-ingress
+spec:
+  rules:
+  - host: laravel.app
+    http:
+      paths:
+        - path: "/"
+          pathType: Prefix
+          backend:
+            service:
+              name: laravel-app-service-node
+              port:
+                number: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: react-ingress
+  labels:
+    name: react-ingress
+spec:
+  rules:
+  - host: react.app
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: react-service-node
+            port: 
+              number: 3000
